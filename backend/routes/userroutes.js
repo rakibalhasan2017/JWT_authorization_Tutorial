@@ -36,5 +36,51 @@ router.post('/register', async(req, res) => {
     }
 });
 
+router.post('/login', async(req, res) => {
+    try {
+        const {name, password} = req.body;
+        if(name && password) {
+            const existeduser = await user.findOne({name});
+            console.log(existeduser);
+            
+            if(existeduser) {
+                const hashedPassword = existeduser.password;
+                const isMatch = await bcrypt.compare(password, hashedPassword);
+                if(isMatch) {
+                    console.log("password match");
+                    console.log(process.env.SECRET_KEY);
+                    
+                    const token = jwt.sign({ "username": name }, process.env.SECRET_KEY, 
+                        {expiresIn: "1h"
+                        }
+                    )
+                    res.status(200).json({
+                        "msg": "login suucessfull!!!",
+                        "token": token
+                    })
+                }
+                else {
+                    console.log("wrong password");
+                    res.status(400).send("wrong password");
+                }
+            }
+            else {
+                res.status(400).send("not registereed user")
+            }
+        }
+        else {
+            console.log("error happened");
+            res.status(400).send("fill all field");
+        }
+    }
+    catch(error) {
+        console.log("error happened");
+        res.status(400).send(error);
+        
+    }
+    
+})
+
+
 
 export default router;
