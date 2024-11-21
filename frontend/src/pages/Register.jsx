@@ -16,7 +16,7 @@ const Register = () => {
     const data = { name, email, password };
     setloading(true);
     try {
-      const response = await axios.post(`http://localhost:5000/register`, data);
+      const response = await axios.post(`http://localhost:5000/changepassword`, data);
       setloading(false);
       navigate("/login");
     } catch (error) {

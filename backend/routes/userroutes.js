@@ -46,14 +46,11 @@ router.post('/login',  async(req, res) => {
         const {name, password} = req.body;
         if(name && password) {
             const existeduser = await user.findOne({name});
-            console.log(existeduser);
-            
             if(existeduser) {
                 const hashedPassword = existeduser.password;
                 const isMatch = await bcrypt.compare(password, hashedPassword);
                 if(isMatch) {
                     console.log("password match");
-                    console.log(process.env.SECRET_KEY);
                     
                     const token = jwt.sign({ "name": name }, process.env.SECRET_KEY, 
                         {expiresIn: "1h"
@@ -61,8 +58,10 @@ router.post('/login',  async(req, res) => {
                     )
                     res.status(200).json({
                         "msg": "login suucessfull!!!",
-                        "token": token
+                        "token": token,
+                        "name": name
                     })
+                    
                 }
                 else {
                     console.log("wrong password");

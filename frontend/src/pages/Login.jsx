@@ -16,6 +16,10 @@ const Login = () => {
     setloading(true);
     try {
       const response = await axios.post(`http://localhost:5000/login`, data);
+      const { token, name } = response.data; // Retrieve the JWT token
+      console.log(response.data);
+      localStorage.setItem("token", token); 
+      localStorage.setItem("name", name);       
       setloading(false);
       navigate("/changepassword");
     } catch (error) {
